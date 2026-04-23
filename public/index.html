@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dreamkey Media — Consistent Leads. Booked Appointments.</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:        #09090B;
+      --surface:   #101014;
+      --border:    #1C1C22;
+      --gold:      #C8A96E;
+      --gold-dim:  rgba(200,169,110,0.12);
+      --hot:       #FF4D2E;
+      --hot-dim:   rgba(255,77,46,0.15);
+      --text:      #EDE9E3;
+      --muted:     #6B6870;
+      --muted-mid: #9A9499;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-weight: 400;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.6;
+    }
+
+    .display { font-family: 'Playfair Display', serif; }
+    .display-italic { font-family: 'Playfair Display', serif; font-style: italic; }
+
+    .grid-bg {
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 64px 64px;
+      animation: gridShift 20s linear infinite;
+    }
+    @keyframes gridShift {
+      from { background-position: 0 0; }
+      to   { background-position: 64px 64px; }
+    }
+
+    .gold-line {
+      display: block;
+      width: 48px;
+      height: 2px;
+      background: var(--gold);
+    }
+
+    .btn-hot {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--hot);
+      color: #fff;
+      font-family: 'Barlow', sans-serif;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 16px 32px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.2s cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 0.2s ease,
+                  transform 0.15s ease;
+      box-shadow: 0 4px 16px rgba(255,77,46,0.35), 0 1px 3px rgba(0,0,0,0.4);
+    }
+    .btn-hot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+    }
+    .btn-hot:hover {
+      background: #FF6347;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(255,77,46,0.45), 0 2px 6px rgba(0,0,0,0.5);
+    }
+    .btn-hot:active { transform: translateY(0); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      color: var(--muted-mid);
+      font-family: 'Barlow', sans-serif;
+      font-weight: 500;
+      font-size: 0.875rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 10px 22px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+    }
+    .btn-ghost:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: var(--gold-dim);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    .pain-card {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 2rem;
+      position: relative;
+      transition: border-color 0.25s ease, background 0.25s ease;
+    }
+    .pain-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px;
+      height: 0;
+      background: var(--gold);
+      transition: height 0.4s cubic-bezier(0.22,1,0.36,1);
+    }
+    .pain-card:hover::before { height: 100%; }
+    .pain-card:hover {
+      border-color: rgba(200,169,110,0.3);
+      background: rgba(200,169,110,0.03);
+    }
+
+    .step-card {
+      border: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      position: relative;
+      background: var(--surface);
+      transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .step-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(200,169,110,0.2);
+    }
+    .step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
+      font-weight: 900;
+      color: rgba(200,169,110,0.2);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+
+    .benefit-row {
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      transition: background 0.2s ease;
+    }
+    .benefit-row:last-child { border-bottom: none; }
+    .benefit-row:hover { background: rgba(200,169,110,0.03); }
+
+    .diff-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+    .diff-row:last-child { border-bottom: none; }
+    .diff-cell {
+      padding: 1.25rem 1.5rem;
+      font-size: 0.9375rem;
+    }
+    .diff-cell:first-child {
+      border-right: 1px solid var(--border);
+      color: var(--muted);
+      text-decoration: line-through;
+      text-decoration-color: rgba(107,104,112,0.5);
+    }
+    .diff-cell:last-child { color: var(--text); }
+
+    .stat-val {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 2.5rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 900;
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.3s ease, backdrop-filter 0.3s ease;
+    }
+    nav.scrolled {
+      background: rgba(9,9,11,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .logo span { color: var(--gold); font-style: italic; }
+
+    .hero-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+    }
+
+    .check-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--gold-dim);
+      border: 1px solid rgba(200,169,110,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr !important; }
+      .hero-grid > div:last-child { display: none; }
+      .sol-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+      .ben-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+      .steps-grid { grid-template-columns: 1fr !important; }
+      .steps-grid > .step-connector { display: none; }
+    }
+    @media (max-width: 640px) {
+      .diff-row { grid-template-columns: 1fr; }
+      .diff-cell:first-child { border-right: none; border-bottom: 1px solid var(--border); text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo">Dreamkey <span>Media</span></div>
+  <a href="https://links.dreamkeymedia.net/widget/booking/yzJVGfHFmfot8db0Ne4D" target="_blank" rel="noopener" class="btn-ghost">
+    Book a Call
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+</nav>
+
+
+<!-- HERO -->
+<section style="min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:7rem 0 5rem;">
+  <div class="grid-bg" style="position:absolute;inset:0;opacity:0.4;"></div>
+  <div class="hero-glow" style="width:500px;height:500px;background:rgba(200,169,110,0.07);top:-100px;right:-100px;"></div>
+  <div class="hero-glow" style="width:400px;height:400px;background:rgba(255,77,46,0.05);bottom:-80px;left:-80px;"></div>
+
+  <div style="max-width:1120px;margin:0 auto;padding:0 2rem;position:relative;z-index:2;width:100%;">
+    <div style="display:grid;grid-template-columns:1fr 420px;gap:5rem;align-items:center;" class="hero-grid">
+
+      <div>
+        <div class="reveal" style="display:flex;align-items:center;gap:12px;margin-bottom:1.75rem;">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--hot);box-shadow:0 0 10px var(--hot);animation:pulse 2s ease infinite;"></span>
+          <span style="font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted-mid);font-weight:500;">AI-Powered Lead Generation</span>
+        </div>
+
+        <h1 class="display reveal reveal-delay-1" style="font-size:clamp(2.75rem,5.5vw,4.5rem);line-height:1.1;letter-spacing:-0.03em;margin-bottom:1.5rem;font-weight:900;">
+          Stop Chasing<br>
+          Leads. Start<br>
+          <span class="display-italic" style="color:var(--gold);">Receiving</span> Them.
+        </h1>
+
+        <p class="reveal reveal-delay-2" style="font-size:1.125rem;color:var(--muted-mid);line-height:1.75;max-width:520px;margin-bottom:2.5rem;">
+          We build AI-powered systems that fill your calendar with qualified appointments — without ad spend guesswork, cold outreach, or wasted follow-ups.
+        </p>
+
+        <div class="reveal reveal-delay-3" style="display:flex;flex-wrap:wrap;align-items:center;gap:1rem;margin-bottom:3rem;">
+          <a href="https://links.dreamkeymedia.net/widget/booking/yzJVGfHFmfot8db0Ne4D" target="_blank" rel="noopener" class="btn-hot">
+            Book Your Free Strategy Call
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8h12M9 3l5 5-5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <span style="font-size:0.8rem;color:var(--muted);font-style:italic;">No sales pressure. Just a plan.</span>
+        </div>
+
+        <div class="reveal reveal-delay-4" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;padding-top:2rem;border-top:1px solid var(--border);">
+          <div>
+            <div class="stat-val" data-count="3">0</div>
+            <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">Avg. weeks to first lead</div>
+          </div>
+          <div>
+            <div class="stat-val" data-count="40" data-suffix="%+">0</div>
+            <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">Avg. conversion uplift</div>
+          </div>
+          <div>
+            <div class="stat-val" data-count="100" data-suffix="%">0</div>
+            <div style="font-size:0.8rem;color:var(--muted);margin-top:4px;">Focus on booked calls</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right card -->
+      <div class="reveal reveal-delay-2" style="border:1px solid var(--border);background:var(--surface);padding:2.5rem;position:relative;">
+        <div style="position:absolute;top:-1px;left:40px;right:40px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);"></div>
+
+        <div style="font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;font-weight:600;">What You Get On The Call</div>
+
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:1.25rem;margin-bottom:2rem;">
+          <li style="display:flex;gap:14px;align-items:flex-start;">
+            <div class="check-icon">
+              <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="#C8A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <div style="font-weight:600;font-size:0.9375rem;margin-bottom:2px;">Custom Lead Generation Plan</div>
+              <div style="font-size:0.8125rem;color:var(--muted);line-height:1.6;">Built around your business, your market, your goals.</div>
+            </div>
+          </li>
+          <li style="display:flex;gap:14px;align-items:flex-start;">
+            <div class="check-icon">
+              <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="#C8A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <div style="font-weight:600;font-size:0.9375rem;margin-bottom:2px;">Identify Your Biggest Leaks</div>
+              <div style="font-size:0.8125rem;color:var(--muted);line-height:1.6;">We audit where leads drop off and why they don't convert.</div>
+            </div>
+          </li>
+          <li style="display:flex;gap:14px;align-items:flex-start;">
+            <div class="check-icon">
+              <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="#C8A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div>
+              <div style="font-weight:600;font-size:0.9375rem;margin-bottom:2px;">A Clear Path Forward</div>
+              <div style="font-size:0.8125rem;color:var(--muted);line-height:1.6;">Leave with a roadmap whether you work with us or not.</div>
+            </div>
+          </li>
+        </ul>
+
+        <a href="https://links.dreamkeymedia.net/widget/booking/yzJVGfHFmfot8db0Ne4D" target="_blank" rel="noopener" class="btn-hot" style="width:100%;justify-content:center;">
+          Claim Your Free Consultation
+        </a>
+        <div style="text-align:center;font-size:0.75rem;color:var(--muted);margin-top:12px;">30 minutes. No obligation. Zero fluff.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- PROBLEM -->
+<section style="padding:6rem 0;border-top:1px solid var(--border);">
+  <div style="max-width:1120px;margin:0 auto;padding:0 2rem;">
+
+    <div style="max-width:640px;margin-bottom:4rem;">
+      <div class="reveal" style="display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;">
+        <span class="gold-line"></span>
+        <span style="font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:600;">Sound Familiar?</span>
+      </div>
+      <h2 class="display reveal reveal-delay-1" style="font-size:clamp(2rem,4vw,3rem);line-height:1.15;letter-spacing:-0.025em;font-weight:900;margin-bottom:1.25rem;">
+        You've Tried Marketing.<br>
+        <span class="display-italic" style="color:var(--muted-mid);">Still Waiting for Results.</span>
+      </h2>
+      <p class="reveal reveal-delay-2" style="font-size:1rem;color:var(--muted-mid);line-height:1.75;">
+        Most business owners aren't short on effort. They're short on a system. Here's what we hear every week.
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;">
+      <div class="pain-card reveal">
+        <div style="font-size:2rem;margin-bottom:1rem;">📉</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;margin-bottom:0.75rem;">Feast or famine lead flow</h3>
+        <p style="font-size:0.9rem;color:var(--muted-mid);line-height:1.75;">Good months, terrible months. No way to predict what's coming. Your pipeline looks different every 30 days and you can't figure out why.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-1">
+        <div style="font-size:2rem;margin-bottom:1rem;">💸</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;margin-bottom:0.75rem;">Agencies that report, not deliver</h3>
+        <p style="font-size:0.9rem;color:var(--muted-mid);line-height:1.75;">You've paid agencies before. You got impressive slide decks, traffic graphs, and "brand awareness." Not one extra customer in the door.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-2">
+        <div style="font-size:2rem;margin-bottom:1rem;">🎯</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;margin-bottom:0.75rem;">Scattered tactics, no strategy</h3>
+        <p style="font-size:0.9rem;color:var(--muted-mid);line-height:1.75;">Tried ads. Tried SEO. Tried referrals. Nothing connects. You're doing a bit of everything and getting nothing close to consistent.</p>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top:3rem;padding:2rem;border:1px solid rgba(200,169,110,0.2);background:var(--gold-dim);display:flex;gap:1.5rem;align-items:flex-start;">
+      <span style="font-family:'Playfair Display',serif;font-size:3.5rem;line-height:0.9;color:var(--gold);flex-shrink:0;">"</span>
+      <div>
+        <p style="font-size:1.0625rem;color:var(--text);line-height:1.75;font-style:italic;margin-bottom:0.75rem;">The problem isn't that marketing doesn't work. The problem is that tactics without a system never hold together long enough to compound.</p>
+        <span style="font-size:0.8rem;color:var(--gold);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">— The Dreamkey Principle</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- SOLUTION -->
+<section style="padding:6rem 0;border-top:1px solid var(--border);position:relative;overflow:hidden;">
+  <div style="position:absolute;right:-200px;top:50%;transform:translateY(-50%);width:500px;height:500px;border-radius:50%;background:rgba(200,169,110,0.04);filter:blur(80px);pointer-events:none;"></div>
+
+  <div style="max-width:1120px;margin:0 auto;padding:0 2rem;position:relative;z-index:2;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;" class="sol-grid">
+
+      <div>
+        <div class="reveal" style="display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;">
+          <span class="gold-line"></span>
+          <span style="font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:600;">The Fix</span>
+        </div>
+        <h2 class="display reveal reveal-delay-1" style="font-size:clamp(2rem,4vw,3rem);line-height:1.15;letter-spacing:-0.025em;font-weight:900;margin-bottom:1.5rem;">
+          You Don't Need<br>More Marketing.<br>
+          <span class="display-italic" style="color:var(--gold);">You Need a System.</span>
+        </h2>
+        <p class="reveal reveal-delay-2" style="font-size:1rem;color:var(--muted-mid);line-height:1.8;margin-bottom:1.5rem;">
+          Dreamkey Media doesn't run campaigns and hope for the best. We engineer lead machines — end-to-end systems that attract the right people, move them toward a decision, and land them in your calendar as qualified appointments.
+        </p>
+        <p class="reveal reveal-delay-3" style="font-size:1rem;color:var(--muted-mid);line-height:1.8;">
+          When the system is built, leads don't trickle in randomly. They show up consistently — because the process that creates them runs every day, automatically.
+        </p>
+      </div>
+
+      <div class="reveal reveal-delay-1">
+        <div style="display:flex;flex-direction:column;gap:1px;border:1px solid var(--border);">
+          <div style="padding:1.5rem;background:var(--surface);border-bottom:1px solid var(--border);">
+            <div style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;font-weight:600;">What we build for you</div>
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:36px;height:36px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#C8A96E" stroke-width="1.25"/><path d="M8 5v3l2 2" stroke="#C8A96E" stroke-width="1.25" stroke-linecap="round"/></svg>
+                </div>
+                <div style="font-size:0.9rem;font-weight:500;">Automated lead capture systems</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:36px;height:36px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 12l4-4 3 3 5-7" stroke="#C8A96E" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div style="font-size:0.9rem;font-weight:500;">Optimised conversion funnels</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:36px;height:36px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="6" width="5" height="8" rx="1" stroke="#C8A96E" stroke-width="1.25"/><rect x="9" y="2" width="5" height="12" rx="1" stroke="#C8A96E" stroke-width="1.25"/></svg>
+                </div>
+                <div style="font-size:0.9rem;font-weight:500;">AI-powered follow-up sequences</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:36px;height:36px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 3h10a1 1 0 011 1v8a1 1 0 01-1 1H3a1 1 0 01-1-1V4a1 1 0 011-1z" stroke="#C8A96E" stroke-width="1.25"/><path d="M12 6l-4 3-4-3" stroke="#C8A96E" stroke-width="1.25" stroke-linecap="round"/></svg>
+                </div>
+                <div style="font-size:0.9rem;font-weight:500;">Booked appointment automation</div>
+              </div>
+            </div>
+          </div>
+          <div style="padding:1.25rem 1.5rem;background:var(--gold-dim);">
+            <div style="font-size:0.85rem;color:var(--gold);font-weight:500;">Result: Consistent, qualified leads in your pipeline every month — without babysitting your marketing.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- HOW IT WORKS -->
+<section style="padding:6rem 0;border-top:1px solid var(--border);">
+  <div style="max-width:1120px;margin:0 auto;padding:0 2rem;">
+
+    <div style="text-align:center;max-width:560px;margin:0 auto 4rem;">
+      <div class="reveal" style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:1.25rem;">
+        <span class="gold-line"></span>
+        <span style="font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:600;">The Process</span>
+        <span class="gold-line"></span>
+      </div>
+      <h2 class="display reveal reveal-delay-1" style="font-size:clamp(2rem,4vw,3rem);line-height:1.15;letter-spacing:-0.025em;font-weight:900;">
+        Three Steps to<br><span class="display-italic" style="color:var(--gold);">a Full Calendar</span>
+      </h2>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;position:relative;" class="steps-grid">
+      <div class="step-connector" style="position:absolute;top:3.75rem;left:calc(16.66% + 1rem);right:calc(16.66% + 1rem);height:1px;background:linear-gradient(90deg,var(--gold),rgba(200,169,110,0.3),var(--gold));pointer-events:none;z-index:0;"></div>
+
+      <div class="step-card reveal" style="z-index:1;">
+        <div class="step-num">01</div>
+        <div style="font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--hot);font-weight:600;margin-bottom:0.75rem;">Attract</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:1rem;">Find Your<br>Ideal Buyers</h3>
+        <p style="font-size:0.875rem;color:var(--muted-mid);line-height:1.8;">We identify exactly where your best customers spend their time and put your message in front of them with precision — not broad spray-and-pray ads.</p>
+      </div>
+
+      <div class="step-card reveal reveal-delay-1" style="z-index:1;">
+        <div class="step-num">02</div>
+        <div style="font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--hot);font-weight:600;margin-bottom:0.75rem;">Convert</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:1rem;">Turn Interest<br>Into Action</h3>
+        <p style="font-size:0.875rem;color:var(--muted-mid);line-height:1.8;">Optimised funnels and AI-powered follow-up sequences take cold prospects and move them toward a decision — automatically, without you lifting a finger.</p>
+      </div>
+
+      <div class="step-card reveal reveal-delay-2" style="z-index:1;">
+        <div class="step-num">03</div>
+        <div style="font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--hot);font-weight:600;margin-bottom:0.75rem;">Book</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:1rem;">Qualified Calls<br>On Autopilot</h3>
+        <p style="font-size:0.875rem;color:var(--muted-mid);line-height:1.8;">Ready-to-buy appointments land in your calendar every week. You show up, have the conversation, and close — we handled everything before that point.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- BENEFITS -->
+<section style="padding:6rem 0;border-top:1px solid var(--border);background:var(--surface);">
+  <div style="max-width:1120px;margin:0 auto;padding:0 2rem;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;" class="ben-grid">
+
+      <div>
+        <div class="reveal" style="display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;">
+          <span class="gold-line"></span>
+          <span style="font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:600;">What Changes</span>
+        </div>
+        <h2 class="display reveal reveal-delay-1" style="font-size:clamp(2rem,4vw,3rem);line-height:1.15;letter-spacing:-0.025em;font-weight:900;margin-bottom:1.5rem;">
+          What Your Business<br>Looks Like<br>
+          <span class="display-italic" style="color:var(--gold);">90 Days From Now</span>
+        </h2>
+        <p class="reveal reveal-delay-2" style="font-size:1rem;color:var(--muted-mid);line-height:1.8;">
+          When you stop guessing and start running a real system, everything downstream changes. Here's what our clients experience.
+        </p>
+      </div>
+
+      <div class="reveal reveal-delay-1">
+        <div class="benefit-row">
+          <div style="width:40px;height:40px;border:1px solid rgba(200,169,110,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--gold-dim);">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="#C8A96E" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div style="font-weight:600;font-size:0.9375rem;margin-bottom:4px;">Predictable lead flow, month after month</div>
+            <div style="font-size:0.85rem;color:var(--muted);line-height:1.6;">No more crossing your fingers. You know what's coming in before the month starts.</div>
+          </div>
+        </div>
+        <div class="benefit-row">
+          <div style="width:40px;height:40px;border:1px solid rgba(200,169,110,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--gold-dim);">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 13l4-4 3 3 5-7" stroke="#C8A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <div style="font-weight:600;font-size:0.9375rem;margin-bottom:4px;">Conversations only with people ready to buy</div>
+            <div style="font-size:0.85rem;color:var(--muted);line-height:1.6;">The system filters and qualifies. By the time a lead reaches you, they've already sold themselves.</div>
+          </div>
+        </div>
+        <div class="benefit-row">
+          <div style="width:40px;height:40px;border:1px solid rgba(200,169,110,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--gold-dim);">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="3" width="12" height="12" rx="2" stroke="#C8A96E" stroke-width="1.5"/><path d="M6 9h6M9 6v6" stroke="#C8A96E" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div style="font-weight:600;font-size:0.9375rem;margin-bottom:4px;">More time for your actual business</div>
+            <div style="font-size:0.85rem;color:var(--muted);line-height:1.6;">Stop spending hours on outreach and follow-up. The system handles it — you stay focused on delivery.</div>
+          </div>
+        </div>
+        <div class="benefit-row">
+          <div style="width:40px;height:40px;border:1px solid rgba(200,169,110,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--gold-dim);">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6" stroke="#C8A96E" stroke-width="1.5"/><path d="M9 6v3l2 2" stroke="#C8A96E" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <div style="font-weight:600;font-size:0.9375rem;margin-bottom:4px;">Clear numbers — not vanity metrics</div>
+            <div style="font-size:0.85rem;color:var(--muted);line-height:1.6;">We track leads generated, calls booked, and revenue attributed. Not impressions. Not reach. Results.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- DIFFERENTIATION -->
+<section style="padding:6rem 0;border-top:1px solid var(--border);">
+  <div style="max-width:1120px;margin:0 auto;padding:0 2rem;">
+
+    <div style="text-align:center;max-width:560px;margin:0 auto 4rem;">
+      <div class="reveal" style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:1.25rem;">
+        <span class="gold-line"></span>
+        <span style="font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);font-weight:600;">Why We're Different</span>
+        <span class="gold-line"></span>
+      </div>
+      <h2 class="display reveal reveal-delay-1" style="font-size:clamp(2rem,4vw,3rem);line-height:1.15;letter-spacing:-0.025em;font-weight:900;">
+        Most Agencies Sell<br>
+        <span class="display-italic" style="color:var(--hot);">Activity.</span> We Sell<br>
+        <span class="display-italic" style="color:var(--gold);">Outcomes.</span>
+      </h2>
+    </div>
+
+    <div class="reveal" style="border:1px solid var(--border);overflow:hidden;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border);">
+        <div style="padding:1rem 1.5rem;background:rgba(107,104,112,0.08);border-right:1px solid var(--border);">
+          <div style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:600;">Typical Agency</div>
+        </div>
+        <div style="padding:1rem 1.5rem;background:var(--gold-dim);">
+          <div style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);font-weight:600;">Dreamkey Media</div>
+        </div>
+      </div>
+      <div class="diff-row"><div class="diff-cell">Charges a monthly retainer to "manage" your ads</div><div class="diff-cell">Builds a system that compounds and improves over time</div></div>
+      <div class="diff-row"><div class="diff-cell">Reports impressions, clicks, and reach</div><div class="diff-cell">Reports leads generated, calls booked, revenue influenced</div></div>
+      <div class="diff-row"><div class="diff-cell">Runs campaigns until budget runs out</div><div class="diff-cell">Creates automated pipelines that run 24/7</div></div>
+      <div class="diff-row"><div class="diff-cell">Disappears when results don't come fast</div><div class="diff-cell">Iterates, optimises, and owns the outcome</div></div>
+      <div class="diff-row"><div class="diff-cell">Sends you a PDF report you don't understand</div><div class="diff-cell">Gives you a dashboard with numbers that matter</div></div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- FINAL CTA -->
+<section id="cta" style="padding:7rem 0;border-top:1px solid var(--border);position:relative;overflow:hidden;">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 100%, rgba(200,169,110,0.07) 0%, transparent 70%);pointer-events:none;"></div>
+  <div class="grid-bg" style="position:absolute;inset:0;opacity:0.2;"></div>
+
+  <div style="max-width:720px;margin:0 auto;padding:0 2rem;text-align:center;position:relative;z-index:2;">
+
+    <div class="reveal" style="display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(200,169,110,0.25);padding:8px 20px;margin-bottom:2rem;background:var(--gold-dim);">
+      <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--hot);animation:pulse 2s ease infinite;"></span>
+      <span style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);font-weight:600;">Free Consultation — Limited Spots</span>
+    </div>
+
+    <h2 class="display reveal reveal-delay-1" style="font-size:clamp(2.25rem,5vw,3.75rem);line-height:1.1;letter-spacing:-0.03em;font-weight:900;margin-bottom:1.5rem;">
+      Let's Build Your<br>
+      Lead Machine <span class="display-italic" style="color:var(--gold);">Together.</span>
+    </h2>
+
+    <p class="reveal reveal-delay-2" style="font-size:1.0625rem;color:var(--muted-mid);line-height:1.8;margin-bottom:3rem;">
+      Book a free 30-minute strategy call. We'll map out a custom lead generation plan for your business — specific, actionable, and honest. You'll leave with a clear path forward whether you work with us or not. No hard sell. No fluff.
+    </p>
+
+    <div class="reveal reveal-delay-3">
+      <a href="https://links.dreamkeymedia.net/widget/booking/yzJVGfHFmfot8db0Ne4D" target="_blank" rel="noopener" class="btn-hot" style="font-size:1rem;padding:20px 48px;">
+        Book My Free Strategy Call
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 9h14M10 3l6 6-6 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <div class="reveal reveal-delay-4" style="display:flex;align-items:center;justify-content:center;gap:2rem;margin-top:2.5rem;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.8rem;color:var(--muted);">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="#C8A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        30-minute call
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.8rem;color:var(--muted);">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="#C8A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Custom plan for your business
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.8rem;color:var(--muted);">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7l3.5 3.5L12 3" stroke="#C8A96E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Zero obligation
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid var(--border);padding:2.5rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+  <div class="logo" style="font-size:1rem;">Dreamkey <span>Media</span></div>
+  <div style="font-size:0.8rem;color:var(--muted);">© 2026 Dreamkey Media. All rights reserved.</div>
+  <div style="font-size:0.8rem;">
+    <a href="mailto:dreamkeymediaasia@gmail.com" style="color:var(--muted);text-decoration:none;transition:color 0.2s ease;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">dreamkeymediaasia@gmail.com</a>
+  </div>
+</footer>
+
+
+<script>
+  // Nav scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Counter animation
+  function animateCounter(el) {
+    const target = parseInt(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const duration = 1800;
+    const start = performance.now();
+    function step(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(ease * target) + suffix;
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  const counterObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        animateCounter(e.target);
+        counterObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
+</script>
+
+</body>
+</html>
